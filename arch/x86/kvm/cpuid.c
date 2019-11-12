@@ -1059,7 +1059,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 			eax = COUNTER_EXIT;
 		break;
 
-		case 0x4FFFFFFF:
+		case 0x4FFFFFFE:
 		// return high 32 bits of total time spent processing exits in ebx
 		// return low 32 bits of total time spent processing exits in ecx
 		break;

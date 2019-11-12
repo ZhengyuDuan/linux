@@ -61,11 +61,11 @@
 #include "vmx.h"
 #include "x86.h"
 
-extern COUNTER_CYCLE;
-extern COUNTER_EXIT;
-
 MODULE_AUTHOR("Qumranet");
 MODULE_LICENSE("GPL");
+
+extern uint64_t COUNTER_CYCLE;
+extern int COUNTER_EXIT;
 
 static const struct x86_cpu_id vmx_cpu_id[] = {
 	X86_FEATURE_MATCH(X86_FEATURE_VMX),
@@ -5863,6 +5863,11 @@ void dump_vmcs(void)
  */
 static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 {
+	//initializting start time 
+	//increment of exit counter
+	COUNTER_EXIT = COUNTER_EXIT + 1;
+	uint64_t start_time = rdtsc();
+
 	struct vcpu_vmx *vmx = to_vmx(vcpu);
 	u32 exit_reason = vmx->exit_reason;
 	u32 vectoring_info = vmx->idt_vectoring_info;
@@ -5948,8 +5953,11 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 	}
 
 	if (exit_reason < kvm_vmx_max_exit_handlers
-	    && kvm_vmx_exit_handlers[exit_reason])
-		return kvm_vmx_exit_handlers[exit_reason](vcpu);
+	    && kvm_vmx_exit_handlers[exit_reason]){
+		uint64_t end_time = rdtsc()- start_time;
+		COUNTER_CYCLE = COUNTER_CYCLE+end_time;
+		return kvm_vmx_exit_handlers[exit_reason](vcpu);	
+	}
 	else {
 		vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n",
 				exit_reason);
@@ -5961,6 +5969,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 		vcpu->run->internal.data[0] = exit_reason;
 		return 0;
 	}
+	//TODO: find the place to calculate end_cycle time
 }
 
 /*
