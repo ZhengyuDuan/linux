@@ -65,7 +65,9 @@ MODULE_AUTHOR("Qumranet");
 MODULE_LICENSE("GPL");
 
 //extern variables from cpuid.c
-extern uint64_t COUNTER_CYCLE;
+// variable type change for cycle counter (bug fix)
+// extern uint64_t COUNTER_CYCLE;
+extern atomic64_t COUNTER_CYCLE;
 extern atomic_t COUNTER_EXIT;
 
 static const struct x86_cpu_id vmx_cpu_id[] = {
@@ -5866,7 +5868,10 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 {
 	//initializting start time 
 	//increment of exit counter
-	COUNTER_EXIT = COUNTER_EXIT + 1;
+
+	// fix the bug after variable type changed
+	// COUNTER_EXIT = COUNTER_EXIT + 1;
+	atomic_inc(&COUNTER_EXIT);
 	uint64_t start_time = rdtsc();
 
 	struct vcpu_vmx *vmx = to_vmx(vcpu);
@@ -5957,7 +5962,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 	    && kvm_vmx_exit_handlers[exit_reason]){
 		int temp_return = kvm_vmx_exit_handlers[exit_reason](vcpu);
 		uint64_t end_time = rdtsc()- start_time;
-		COUNTER_CYCLE = COUNTER_CYCLE+end_time;
+		// COUNTER_CYCLE = COUNTER_CYCLE+end_time;
+		atomic64_add(end_time, &COUNTER_CYCLE);
 		return temp_return;	
 	}
 	else {

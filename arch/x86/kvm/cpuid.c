@@ -27,7 +27,7 @@
 // initializing global variables for time cycle and exit counter
 
 atomic_t COUNTER_EXIT;
-uint64_t COUNTER_CYCLE;
+atomic64_t COUNTER_CYCLE;
 EXPORT_SYMBOL(COUNTER_EXIT);
 EXPORT_SYMBOL(COUNTER_CYCLE);
 
