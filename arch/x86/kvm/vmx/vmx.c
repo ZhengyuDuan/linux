@@ -64,8 +64,9 @@
 MODULE_AUTHOR("Qumranet");
 MODULE_LICENSE("GPL");
 
+//extern variables from cpuid.c
 extern uint64_t COUNTER_CYCLE;
-extern int COUNTER_EXIT;
+extern atomic_t COUNTER_EXIT;
 
 static const struct x86_cpu_id vmx_cpu_id[] = {
 	X86_FEATURE_MATCH(X86_FEATURE_VMX),
