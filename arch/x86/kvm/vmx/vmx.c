@@ -61,6 +61,9 @@
 #include "vmx.h"
 #include "x86.h"
 
+extern COUNTER_CYCLE;
+extern COUNTER_EXIT;
+
 MODULE_AUTHOR("Qumranet");
 MODULE_LICENSE("GPL");
 

@@ -24,6 +24,10 @@
 #include "trace.h"
 #include "pmu.h"
 
+int COUNTER_EXIT;
+uint64_t COUNTER_CYCLE;
+
+
 static u32 xstate_required_size(u64 xstate_bv, bool compacted)
 {
 	int feature_bit = 0;
@@ -1046,7 +1050,32 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 
 	eax = kvm_rax_read(vcpu);
 	ecx = kvm_rcx_read(vcpu);
-	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, true);
+
+	switch(eax){
+
+		case 0x4FFFFFFF:
+		//TODO : RETURN THE TOTAL NUMBER OF EXITS (ALL TYPES)
+		//		 IN %eax
+			eax = COUNTER_EXIT;
+		break;
+
+		case 0x4FFFFFFF:
+		// return high 32 bits of total time spent processing exits in ebx
+		// return low 32 bits of total time spent processing exits in ecx
+		break;
+
+		case 0x4FFffffD:
+		// return number of exits for the exit number provided in ecx;
+		break;
+
+		case 0x4FFFFFFC:
+		//return time spent processing the exit number provided in ecx
+		break;
+
+		default:
+			kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, true);
+		break;
+	}
 	kvm_rax_write(vcpu, eax);
 	kvm_rbx_write(vcpu, ebx);
 	kvm_rcx_write(vcpu, ecx);
