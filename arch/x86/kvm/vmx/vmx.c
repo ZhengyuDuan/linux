@@ -5955,9 +5955,10 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 
 	if (exit_reason < kvm_vmx_max_exit_handlers
 	    && kvm_vmx_exit_handlers[exit_reason]){
+		int temp_return = kvm_vmx_exit_handlers[exit_reason](vcpu);
 		uint64_t end_time = rdtsc()- start_time;
 		COUNTER_CYCLE = COUNTER_CYCLE+end_time;
-		return kvm_vmx_exit_handlers[exit_reason](vcpu);	
+		return temp_return;	
 	}
 	else {
 		vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n",
