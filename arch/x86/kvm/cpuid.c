@@ -1059,7 +1059,8 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 		case 0x4FFFFFFF:
 		//TODO : RETURN THE TOTAL NUMBER OF EXITS (ALL TYPES)
 		//		 IN %eax
-			eax = COUNTER_EXIT;
+			// eax = COUNTER_EXIT;
+			eax = atomic_read(&COUNTER_EXIT);
 		break;
 
 		case 0x4FFFFFFE:
