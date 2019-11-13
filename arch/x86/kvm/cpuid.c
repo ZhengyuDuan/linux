@@ -1066,6 +1066,11 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 		case 0x4FFFFFFE:
 		// return high 32 bits of total time spent processing exits in ebx
 		// return low 32 bits of total time spent processing exits in ecx
+			uint64_t cycles= atomic64_read(&COUNTER_CYCLE);
+			uint32_t ls = cycles & 0xffffffff;
+			uint32_t rs = cycles >>32;
+			ebx = rs;
+			ecx = ls;
 		break;
 
 		case 0x4FFffffD:
