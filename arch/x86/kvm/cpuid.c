@@ -1055,7 +1055,8 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 	ecx = kvm_rcx_read(vcpu);
 
 	switch(eax){
-
+		uint64_t cycles;
+		uint32_t ls,rs;
 		case 0x4FFFFFFF:
 		//TODO : RETURN THE TOTAL NUMBER OF EXITS (ALL TYPES)
 		//		 IN %eax
@@ -1066,9 +1067,9 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 		case 0x4FFFFFFE:
 		// return high 32 bits of total time spent processing exits in ebx
 		// return low 32 bits of total time spent processing exits in ecx
-			uint64_t cycles= atomic64_read(&COUNTER_CYCLE);
-			uint32_t ls = cycles & 0xffffffff;
-			uint32_t rs = cycles >>32;
+			cycles= atomic64_read(&COUNTER_CYCLE);
+			ls = cycles & 0xffffffff;
+			rs = cycles >>32;
 			ebx = rs;
 			ecx = ls;
 		break;
