@@ -5968,8 +5968,9 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 		atomic64_add(end_time, &COUNTER_CYCLE);
 
 		//add processing time to particular element.
-		CYCLE_ARR[exit_reason]=CYCLE_ARR[exit_reason]+end_time;
-
+		// CYCLE_ARR[exit_reason]=CYCLE_ARR[exit_reason]+end_time;
+		uint64_t current_cycle = CYCLE_ARR[exit_reason];
+		CYCLE_ARR[exit_reason]=current_cycle+end_time;
 		//increment one for index of exit_reason
 		EXIT_ARR[exit_reason]++;
 		return temp_return;	

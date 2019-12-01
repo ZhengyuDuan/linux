@@ -1079,15 +1079,14 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 			ecx = ls;
 		break;
 
-		case 0x4FFffffD:
+		case 0x4FFFFFFD:
 		// return number of exits for the exit number provided in ecx;
 			if(ecx <0 ||
 				ecx >68){
-				//TODO: sections for exit resons not included, numbers in SDM
 				eax = 0;
 				ebx = 0;
 				ecx = 0;
-				edx = 0xFFFFFFFF;
+				edx = 0xffffffff;
 			}else if(EXIT_ARR[ecx]!=0){
 				eax = EXIT_ARR[ecx];
 			}else{
@@ -1106,11 +1105,11 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 				eax = 0;
 				ebx = 0;
 				ecx = 0;
-				edx = 0xFFFFFFFF;
+				edx = 0xffffffff;
 			}else if(EXIT_ARR[ecx]!=0){
-				cycle = CYCLE_ARR[ecx];
-				ls = cycles & 0xffffffff;
-				rs = cycles >>32;
+				uint64_t cycle = CYCLE_ARR[ecx];
+				ls = cycle & 0xffffffff;
+				rs = cycle >>32;
 				ebx = rs;
 				ecx = ls;
 			}else{
