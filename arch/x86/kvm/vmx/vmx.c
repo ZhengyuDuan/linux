@@ -69,6 +69,8 @@ MODULE_LICENSE("GPL");
 // extern uint64_t COUNTER_CYCLE;
 extern atomic64_t COUNTER_CYCLE;
 extern atomic_t COUNTER_EXIT;
+extern int EXIT_ARR[68];
+extern uint64_t CYCLE_ARR[68];
 
 static const struct x86_cpu_id vmx_cpu_id[] = {
 	X86_FEATURE_MATCH(X86_FEATURE_VMX),
@@ -5964,6 +5966,12 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 		uint64_t end_time = rdtsc()- start_time;
 		// COUNTER_CYCLE = COUNTER_CYCLE+end_time;
 		atomic64_add(end_time, &COUNTER_CYCLE);
+
+		//add processing time to particular element.
+		CYCLE_ARR[exit_reason]=CYCLE_ARR[exit_reason]+end_time;
+
+		//increment one for index of exit_reason
+		EXIT_ARR[exit_reason]++;
 		return temp_return;	
 	}
 	else {

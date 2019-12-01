@@ -28,8 +28,13 @@
 
 atomic_t COUNTER_EXIT;
 atomic64_t COUNTER_CYCLE;
+int EXIT_ARR[68];
+uint64_t CYCLE_ARR[68];
+
 EXPORT_SYMBOL(COUNTER_EXIT);
 EXPORT_SYMBOL(COUNTER_CYCLE);
+EXPORT_SYMBOL(EXIT_ARR);
+EXPORT_SYMBOL(CYCLE_ARR);
 
 static u32 xstate_required_size(u64 xstate_bv, bool compacted)
 {
@@ -1076,10 +1081,43 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 
 		case 0x4FFffffD:
 		// return number of exits for the exit number provided in ecx;
+			if(ecx <0 ||
+				ecx >68){
+				//TODO: sections for exit resons not included, numbers in SDM
+				eax = 0;
+				ebx = 0;
+				ecx = 0;
+				edx = 0xFFFFFFFF;
+			}else if(EXIT_ARR[ecx]!=0){
+				eax = EXIT_ARR[ecx];
+			}else{
+				eax = 0;
+				ebx = 0;
+				ecx = 0;
+				edx = 0;
+			}
 		break;
 
 		case 0x4FFFFFFC:
 		//return time spent processing the exit number provided in ecx
+			if(ecx <0 ||
+				ecx >68){
+				//TODO: sections for exit resons not included, numbers in SDM
+				eax = 0;
+				ebx = 0;
+				ecx = 0;
+				edx = 0xFFFFFFFF;
+			}else if(EXIT_ARR[ecx]!=0){
+				cycle = CYCLE_ARR[ecx];
+				ls = cycles & 0xffffffff;
+				rs = cycles >>32;
+				ebx = rs;
+				ecx = ls;
+			}else{
+				eax = 0;
+				ebx = 0;
+				ecx = 0;
+				edx = 0;
 		break;
 
 		default:
