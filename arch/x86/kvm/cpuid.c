@@ -1087,7 +1087,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 				ebx = 0;
 				ecx = 0;
 				edx = 0xffffffff;
-			}else if(EXIT_ARR[ecx]!=0){
+			}else if(EXIT_ARR[ecx]>0){
 				eax = EXIT_ARR[ecx];
 			}else{
 				eax = 0;
@@ -1106,7 +1106,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 				ebx = 0;
 				ecx = 0;
 				edx = 0xffffffff;
-			}else if(EXIT_ARR[ecx]!=0){
+			}else if(EXIT_ARR[ecx]>0){
 				uint64_t cycle = CYCLE_ARR[ecx];
 				ls = cycle & 0xffffffff;
 				rs = cycle >>32;
@@ -1117,6 +1117,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 				ebx = 0;
 				ecx = 0;
 				edx = 0;
+			}
 		break;
 
 		default:

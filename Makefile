@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 VERSION = 5
 PATCHLEVEL = 4
-SUBLEVEL = 1
+SUBLEVEL = 2
 EXTRAVERSION = -rc4
 NAME = Nesting Opossum
 # changed extraversion to make diff with my own pc, so i can find out wich kernel to select.
