@@ -69,7 +69,7 @@ MODULE_LICENSE("GPL");
 // extern uint64_t COUNTER_CYCLE;
 extern atomic64_t COUNTER_CYCLE;
 extern atomic_t COUNTER_EXIT;
-extern int EXIT_ARR[68];
+extern atomic_t EXIT_ARR[68];
 extern uint64_t CYCLE_ARR[68];
 
 static const struct x86_cpu_id vmx_cpu_id[] = {
@@ -5868,7 +5868,7 @@ void dump_vmcs(void)
  */
 static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 {
-	//initializting start time 
+	//initializting start time
 	//increment of exit counter
 
 	// fix the bug after variable type changed
@@ -5972,8 +5972,11 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu)
 		uint64_t current_cycle = CYCLE_ARR[exit_reason];
 		CYCLE_ARR[exit_reason]=current_cycle+end_time;
 		//increment one for index of exit_reason
-		EXIT_ARR[exit_reason]++;
-		return temp_return;	
+		// EXIT_ARR[exit_reason]++;
+		atomc_t exit_arr_curret = EXIT_ARR[exit_reason];
+		atomic_inc(&exit_arr_curret);
+		EXIT_ARR[exit_reason] = exit_arr_curret;
+		return temp_return;
 	}
 	else {
 		vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n",
