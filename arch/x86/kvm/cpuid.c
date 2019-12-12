@@ -28,7 +28,8 @@
 
 atomic_t COUNTER_EXIT;
 atomic64_t COUNTER_CYCLE;
-int EXIT_ARR[68];
+// int EXIT_ARR[68];
+atomic_t EXIT_ARR[68];
 uint64_t CYCLE_ARR[68];
 
 EXPORT_SYMBOL(COUNTER_EXIT);
@@ -1100,6 +1101,10 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 		case 0x4FFFFFFC:
 		//return time spent processing the exit number provided in ecx
 			if(ecx <0 ||
+				ecx == 35 ||
+				ecx == 38 ||
+				ecx == 42 ||
+				ecx == 65 ||
 				ecx >68){
 				//TODO: sections for exit resons not included, numbers in SDM
 				eax = 0;
