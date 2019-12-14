@@ -1090,6 +1090,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 				edx = 0xffffffff;
 			}else if(EXIT_ARR[ecx]>0){
 				eax = EXIT_ARR[ecx];
+				printk("Exit count for %d is %lu",ecx,eax);
 			}else{
 				eax = 0;
 				ebx = 0;
